@@ -165,6 +165,41 @@ consul leave
 
 The Key/Value store.
 
+__Put__
+```bash
+consul kv put redis/config/minconns 1
+consul kv put redis/config/maxconns 25
+consul kv put -flags=42 redis/config/users/admin abcd1234
+```
+
+__Get one__
+```bash
+consul kv get redis/config/minconns
+consul kv get -detailed redis/config/minconns
+```
+
+__Get All__
+```bash
+consul kv get -recurse
+```
+
+__Delete__
+```bash
+consul kv delete redis/config/minconns
+consul kv delete -recurse redis
+```
+
+__Update__
+```bash
+consul kv put foo bar
+consul kv put foo zip
+```
+
+__Atomic Update__
+```bash
+consul kv put -cas -modify-index=123 foo bar
+```
+
 ### Ui Web Console
 
 via the `-ui` flag on the CLI
