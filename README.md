@@ -6,9 +6,27 @@ This repo demonstrates the uses of Hashicorp's Consul.
 2. Health Checks
 3. Key-Value (K/V) store
 
-### Intro
+## Table of Contents
 
-#### Starting the Consul agent:
+* [Intro](#intro)
+    * [Starting Consul Agent](#starting-consul-agent)
+	* [Querying Consul Agents (Members)](#querying-consul-agent)
+* [Configuration Directory](#configuration-directory)
+* [Services](#services)
+* [HealthChecks](#healthchecks)
+* [Consul Connect](#consul-connect)
+    * [Intentions](#intentions)  
+* [Cluster](#cluster)
+  * [Start the Server & Client](#start-server-client)
+  * [Joining Cluster](#joining-cluster)
+  * [Query the Nodes](#querying-nodes)
+  * [Leave Cluster](#leave-cluster)
+* [Key/Value (K/V) Store](#kv-store)
+* [UI Web Console](#ui-web-console)
+
+### <a name="intro"></a>Intro
+
+#### <a name="starting-consul-agent"></a>Starting the Consul agent:
 
 ```bash
 consul agent
@@ -20,7 +38,7 @@ Starting in "Dev" mode:
 consul agent -dev
 ```
 
-#### Querying Agents (Members)
+#### <a name="querying-consul-agent"></a>Querying Agents (Members)
 
 From CLI:
 
@@ -45,7 +63,7 @@ dig @127.0.0.1 -p 8600 ip-192-168-20-127.eu-west-1.compute.internal
 "Note that you have to make sure to point your DNS lookups to the Consul agent's DNS server which runs on port 8600 by default."
 
 
-### Configuration Directory
+### <a name="configuration-directory"></a>Configuration Directory
 
 A 'config' directory for Consul. The directory stores:
 
@@ -62,7 +80,7 @@ e.g.
 sudo mkdir /etc/conf.d
 ```
 
-### Services
+### <a name="services"></a>Services
 
 You define 'services' in a "Service Definition" file which is of JSON format. See this repo for samples.
 
@@ -87,7 +105,7 @@ or via DNS:
 dig @127.0.0.1 -p 8600 rails.web.service.consul SRV
 ```
 
-### HealthChecks
+### <a name="healthchecks"></a>HealthChecks
 ```bash
 curl http://localhost:8500/v1/health/state/critical
 ```
@@ -97,7 +115,7 @@ or via DNS:
 dig @127.0.0.1 -p 8600 web.service.consul
 ```
 
-### Consul Connect
+### <a name="consul-connect"></a>Consul Connect
 
 [TBC]
 
@@ -107,7 +125,7 @@ consul connect proxy -service web -upstream socat:9191
 consul connect proxy -sidecar-for web
 ```
 
-#### Controlling access with Intentions
+#### <a name="intentions"></a>Controlling access with Intentions
 
 Interactions in Consul are a way to specify whether a service can or cannot communicate with another service.
 
@@ -122,10 +140,10 @@ consul intention delete web socat
 
 ```
 
-### Cluster
+### <a name="cluster"></a>Cluster
 Assumming you're running more than one node and therefore have multiple nodes forming a cluster.
 
-#### Start the Server & Client agents on the nodes
+#### <a name="start-server-client"></a>Start the Server & Client agents on the nodes
 One agent acts as the 'Server' so you start up the agent as the Server.
 
 ```bash
@@ -139,7 +157,7 @@ Another 'member' comes along to this cluster as the 'Client'
 consul agent -data-dir=/tmp/consul -node=agent-two -bind=172.20.20.11 -enable-script-checks=true -config-dir=/etc/consul.d
 ```
 
-#### Joining a cluster
+#### <a name="joining-cluster"></a>Joining a cluster
 
 To join a cluster, run as the agent of any node and connect to one of the nodes already on the cluster by specifying that nodes' IP address.
 
@@ -148,7 +166,7 @@ e.g.
 consul join 172.20.20.11
 ```
 
-#### Query the nodes
+#### <a name="querying-nodes"></a>Query the nodes
 Agent from one node querying another Agent from a second node.
 
 e.g.
@@ -156,12 +174,12 @@ e.g.
 dig @127.0.0.1 -p 8600 agent-two.node.consul
 ```
 
-#### Leave a cluster
+#### <a name="leave-cluster"></a>Leave a cluster
 ```bash
 consul leave
 ```
 
-### K/V Store
+### <a name="kv-store"></a>K/V Store
 
 The Key/Value store.
 
@@ -200,7 +218,7 @@ __Atomic Update__
 consul kv put -cas -modify-index=123 foo bar
 ```
 
-### Ui Web Console
+### <a name="ui-web-console"></a>Ui Web Console
 
 via the `-ui` flag on the CLI
 
