@@ -47,8 +47,79 @@ dig @127.0.0.1 -p 8600 ip-192-168-20-127.eu-west-1.compute.internal
 
 ### Configuration Directory
 
+A 'config' directory for Consul. The directory stores:
+
+1. Service definition files
+2. HealthChecks definitions
+3. Sidecar Proxy definitions
+
+This config directory is commonly stored under `/etc/conf.d`
+
+Create the folder before starting up Consul.
+
+e.g.
 ```bash
 sudo mkdir /etc/conf.d
+```
+
+### Services
+
+You define 'services' in a "Service Definition" file which is of JSON format. See this repo for samples.
+
+You store the definition files in the Configuration Directory.
+
+If Consul is already started up after you placed the 'new' Definition files in the Configuration Directory then issue either a Consul reload or SIGNUP
+
+e.g.
+```bash
+consul reload
+```
+
+__Queries__
+e.g.
+```bash
+curl http://localhost:8500/v1/catalog/service/web
+curl 'http://localhost:8500/v1/health/service/web?passing'
+```
+
+or via DNS:
+```bash
+dig @127.0.0.1 -p 8600 rails.web.service.consul SRV
+```
+
+### HealthChecks
+```bash
+curl http://localhost:8500/v1/health/state/critical
+```
+
+or via DNS:
+```bash
+dig @127.0.0.1 -p 8600 web.service.consul
+```
+
+### Consul Connect
+
+[TBC]
+
+```bash
+consul connect proxy -sidecar-for socat
+consul connect proxy -service web -upstream socat:9191
+consul connect proxy -sidecar-for web
+```
+
+#### Controlling access with Intentions
+
+Interactions in Consul are a way to specify whether a service can or cannot communicate with another service.
+
+__Deny__
+```bash
+consul intention create -deny web socat
+```
+
+__Allow it again__
+```bash
+consul intention delete web socat
+
 ```
 
 ### Cluster
